@@ -764,7 +764,7 @@
             <li>Clean background</li>
           </ul>
           <p class="career-salary">Competitive Salary</p>
-          <a href="#contact" class="btn btn-primary btn-small">Apply Now</a>
+          <a href="#careerForm" class="btn btn-primary btn-small apply-btn" data-position="Security Guard">Apply Now</a>
         </div>
         <div class="career-card">
           <div class="career-badge">Full Time</div>
@@ -777,7 +777,7 @@
             <li>Leadership skills</li>
           </ul>
           <p class="career-salary">Competitive Salary</p>
-          <a href="#contact" class="btn btn-primary btn-small">Apply Now</a>
+          <a href="#careerForm" class="btn btn-primary btn-small apply-btn" data-position="Security Supervisor">Apply Now</a>
         </div>
         <div class="career-card">
           <div class="career-badge">Full Time</div>
@@ -790,9 +790,87 @@
             <li>Clean record</li>
           </ul>
           <p class="career-salary">Competitive Salary</p>
-          <a href="#contact" class="btn btn-primary btn-small">Apply Now</a>
+          <a href="#careerForm" class="btn btn-primary btn-small apply-btn" data-position="Armed Security Officer">Apply Now</a>
         </div>
       </div>
+      
+      <!-- Job Application Form -->
+      <div class="career-form-wrapper" id="careerForm">
+        <form class="career-form" id="jobApplicationForm" action="https://formspree.io/f/xpqdqadg" method="POST">
+          <h3>📋 Apply for a Position</h3>
+          <input type="hidden" name="_subject" value="New Job Application - Shiv Security Services">
+          <input type="hidden" name="_template" value="table">
+          
+          <div class="form-group">
+            <label for="position">Position Applying For *</label>
+            <select id="position" name="position" required>
+              <option value="">Select Position</option>
+              <option value="Security Guard">Security Guard</option>
+              <option value="Security Supervisor">Security Supervisor</option>
+              <option value="Armed Security Officer">Armed Security Officer</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="applicantName">Full Name *</label>
+            <input type="text" id="applicantName" name="applicantName" required placeholder="Your full name">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="applicantPhone">Phone *</label>
+              <input type="tel" id="applicantPhone" name="applicantPhone" required placeholder="+91 00000 00000">
+            </div>
+            <div class="form-group">
+              <label for="applicantAge">Age *</label>
+              <input type="number" id="applicantAge" name="applicantAge" required min="18" max="60" placeholder="Your age">
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="applicantEducation">Education</label>
+              <select id="applicantEducation" name="applicantEducation">
+                <option value="">Select Education</option>
+                <option value="Below 10th">Below 10th</option>
+                <option value="10th Pass">10th Pass</option>
+                <option value="12th Pass">12th Pass</option>
+                <option value="Graduate">Graduate</option>
+                <option value="Post Graduate">Post Graduate</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="applicantExperience">Experience</label>
+              <select id="applicantExperience" name="applicantExperience">
+                <option value="">Select Experience</option>
+                <option value="Fresher">Fresher</option>
+                <option value="1-2 Years">1-2 Years</option>
+                <option value="3-5 Years">3-5 Years</option>
+                <option value="5+ Years">5+ Years</option>
+                <option value="Ex-Serviceman">Ex-Serviceman</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="applicantAddress">Current Address</label>
+            <input type="text" id="applicantAddress" name="applicantAddress" placeholder="Your current address">
+          </div>
+          
+          <div class="form-group">
+            <label for="applicantMessage">Additional Information</label>
+            <textarea id="applicantMessage" name="applicantMessage" rows="3" placeholder="Any additional details (skills, availability, etc.)"></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-full">
+            <span>Submit Application</span>
+            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+      
       <div class="careers-cta">
         <p>Don't see a suitable position? Send us your resume anyway!</p>
         <a href="mailto:shisservice2020@gmail.com" class="btn btn-secondary">Send Resume</a>
