@@ -409,6 +409,133 @@
   }
 
   // ========================================
+  // JOB APPLICATION FORM
+  // ========================================
+
+  function initJobApplicationForm() {
+    const jobForm = document.getElementById('jobApplicationForm');
+    const positionSelect = document.getElementById('position');
+    const applyButtons = document.querySelectorAll('.apply-btn');
+    const successModal = document.getElementById('successModal');
+
+    // Handle "Apply Now" button clicks - pre-select position
+    applyButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const position = btn.getAttribute('data-position');
+        if (position && positionSelect) {
+          // Set the position value
+          positionSelect.value = position;
+          
+          // Add highlight effect to form
+          const formWrapper = document.getElementById('careerForm');
+          if (formWrapper) {
+            formWrapper.style.boxShadow = '0 0 0 3px var(--saffron-glow), 0 20px 40px rgba(0,0,0,0.3)';
+            setTimeout(() => {
+              formWrapper.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)';
+            }, 2000);
+          }
+        }
+      });
+    });
+
+    if (!jobForm) return;
+
+    jobForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(jobForm);
+      const data = Object.fromEntries(formData);
+
+      // Basic validation
+      if (!data.position || !data.applicantName || !data.applicantPhone || !data.applicantAge) {
+        showJobFormError('Please fill in all required fields.');
+        return;
+      }
+
+      // Validate phone (basic check for Indian numbers)
+      const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+      if (!phoneRegex.test(data.applicantPhone.replace(/\s/g, ''))) {
+        showJobFormError('Please enter a valid phone number.');
+        return;
+      }
+
+      // Validate age
+      const age = parseInt(data.applicantAge);
+      if (isNaN(age) || age < 18 || age > 60) {
+        showJobFormError('Age must be between 18 and 60 years.');
+        return;
+      }
+
+      // Get form action URL (Formspree endpoint)
+      const formAction = jobForm.getAttribute('action');
+      
+      // Show loading state
+      const submitBtn = jobForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span>Submitting...</span>';
+      submitBtn.disabled = true;
+
+      try {
+        // Submit to Formspree via AJAX
+        const response = await fetch(formAction, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          // Show success modal
+          if (successModal) {
+            // Update modal text for job application
+            const modalTitle = successModal.querySelector('h3');
+            const modalText = successModal.querySelector('p');
+            if (modalTitle) modalTitle.textContent = 'Application Submitted!';
+            if (modalText) modalText.textContent = 'Thank you for applying. We will review your application and contact you within 3-5 business days.';
+            
+            successModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          }
+          
+          // Reset form
+          jobForm.reset();
+          
+          console.log('✅ Job application submitted successfully:', data);
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Form submission failed');
+        }
+      } catch (error) {
+        console.error('❌ Job application error:', error);
+        showJobFormError('Sorry, there was an error submitting your application. Please try again or contact us directly.');
+      } finally {
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Show form error
+    function showJobFormError(message) {
+      let errorEl = document.getElementById('jobFormError');
+      if (!errorEl) {
+        errorEl = document.createElement('div');
+        errorEl.id = 'jobFormError';
+        errorEl.style.cssText = 'background: rgba(220, 53, 69, 0.1); border: 1px solid #dc3545; color: #dc3545; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;';
+        jobForm.insertBefore(errorEl, jobForm.querySelector('.form-group'));
+      }
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        errorEl.style.display = 'none';
+      }, 5000);
+    }
+  }
+
+  // ========================================
   // SCROLL ANIMATIONS
   // ========================================
 
@@ -521,6 +648,7 @@
     initButtonEffects();
     initNavigation();
     initContactForm();
+    initJobApplicationForm();
     initScrollAnimations();
     initKeyboardNav();
     initLoadSequence();
