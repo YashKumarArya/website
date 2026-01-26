@@ -292,7 +292,7 @@
   }
 
   // ========================================
-  // CONTACT FORM
+  // CONTACT FORM (Formspree Integration)
   // ========================================
 
   function initContactForm() {
@@ -301,7 +301,7 @@
 
     if (!contactForm) return;
 
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const formData = new FormData(contactForm);
@@ -309,41 +309,86 @@
 
       // Basic validation
       if (!data.name || !data.email || !data.phone) {
-        alert('Please fill in all required fields.');
+        showFormError('Please fill in all required fields.');
         return;
       }
 
       // Validate email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(data.email)) {
-        alert('Please enter a valid email address.');
+        showFormError('Please enter a valid email address.');
         return;
       }
 
-      // Simulate form submission
+      // Validate phone (basic check for Indian numbers)
+      const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+      if (!phoneRegex.test(data.phone.replace(/\s/g, ''))) {
+        showFormError('Please enter a valid phone number.');
+        return;
+      }
+
+      // Get form action URL (Formspree endpoint)
+      const formAction = contactForm.getAttribute('action');
+      
+      // Show loading state
       const submitBtn = contactForm.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
-      
       submitBtn.innerHTML = '<span>Sending...</span>';
       submitBtn.disabled = true;
 
-      setTimeout(() => {
-        // Show success modal
-        if (successModal) {
-          successModal.classList.add('active');
-          document.body.style.overflow = 'hidden';
+      try {
+        // Submit to Formspree via AJAX
+        const response = await fetch(formAction, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          // Show success modal
+          if (successModal) {
+            successModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          }
+          
+          // Reset form
+          contactForm.reset();
+          
+          console.log('✅ Form submitted successfully:', data);
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Form submission failed');
         }
-        
-        // Reset form
-        contactForm.reset();
-        
+      } catch (error) {
+        console.error('❌ Form submission error:', error);
+        showFormError('Sorry, there was an error sending your message. Please try again or call us directly.');
+      } finally {
         // Reset button
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
-
-        console.log('Form submitted:', data);
-      }, 1500);
+      }
     });
+
+    // Show form error
+    function showFormError(message) {
+      // Check if error element exists, if not create it
+      let errorEl = document.getElementById('formError');
+      if (!errorEl) {
+        errorEl = document.createElement('div');
+        errorEl.id = 'formError';
+        errorEl.style.cssText = 'background: rgba(220, 53, 69, 0.1); border: 1px solid #dc3545; color: #dc3545; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;';
+        contactForm.insertBefore(errorEl, contactForm.firstChild.nextSibling);
+      }
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        errorEl.style.display = 'none';
+      }, 5000);
+    }
 
     // Close modal on backdrop click
     if (successModal) {

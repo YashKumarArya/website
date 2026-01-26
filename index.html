@@ -428,8 +428,11 @@
           </div>
         </div>
         <div class="contact-form-wrapper">
-          <form class="contact-form" id="contactForm">
+          <form class="contact-form" id="contactForm" action="https://formspree.io/f/xpqdqadg" method="POST">
             <h3>Request a Quote</h3>
+            <!-- Hidden field for form identification -->
+            <input type="hidden" name="_subject" value="New Quote Request from Shiv Security Website">
+            <input type="hidden" name="_template" value="table">
             <div class="form-group">
               <label for="name">Full Name *</label>
               <input type="text" id="name" name="name" required placeholder="Your name">
