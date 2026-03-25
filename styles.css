@@ -1132,6 +1132,7 @@ img {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
+  margin-bottom: 40px;
   align-items: center;
 }
 
@@ -1526,6 +1527,7 @@ img {
   border: 1px solid var(--gray-700);
   border-radius: 16px;
   padding: 40px;
+  margin-top:40px;
 }
 
 .contact-form h3 {
