@@ -556,11 +556,14 @@
         rootMargin: '0px 0px -50px 0px'
       });
 
-      animatedElements.forEach((el, index) => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-        observer.observe(el);
+      // Reset index per selector group so delays don't accumulate across sections
+      ['.service-card', '.feature-item', '.step', '.career-card', '.contact-item'].forEach(selector => {
+        document.querySelectorAll(selector).forEach((el, index) => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(30px)';
+          el.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
+          observer.observe(el);
+        });
       });
     }
   }
